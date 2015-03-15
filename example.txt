@@ -1,0 +1,10 @@
+#Alfabeto
+a,b
+#estados 
+q0,q1,q2,q3,q4
+#estado inicial
+q0
+#estados finales
+q1,q2,q4
+#tabla
+q0,a,q1
