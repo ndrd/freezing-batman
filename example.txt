@@ -1,10 +1,36 @@
-#Alfabeto
-a,b
-#estados 
-q0,q1,q2,q3,q4
-#estado inicial
-q0
-#estados finales
-q1,q2,q4
-#tabla
+* FORMATO DEL ARCHIVO
+* El programa reconoce el siguiente formato de archivo
+* sin importar el orden con el que se lean
+* se debe poner la cabecera del elemento, y debajo los elementos 
+* que le corresponenden, por ejemplo, para indicarle el alfabeto que
+* debe leer : 
+*
+* #S 
+* a,b
+* Las cabeceras que reconoce son:
+* #S : alfabeto
+* #Q : estados
+* #I : estado inicial
+* #F : estados finales
+* #T : tabla de transiciones
+
+#T
 q0,a,q1
+q0,b,q0
+q1,a,q2
+q2,a,q3
+q3,a,q4
+q5,b,q5
+
+#S
+a,b
+
+#Q 
+q0,q1,q2,q3,q4,q5
+
+#F
+q1,q2,q4
+
+#I
+q0
+
