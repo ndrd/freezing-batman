@@ -1,0 +1,29 @@
+Minimizador de automatas finitos deterministas
+mediante el algoritmo de Hopcroft (estados no distinguibles)
+
+http://en.wikipedia.org/wiki/DFA_minimization
+
+Autor: Jonathan Andrade Lopez
+
+
+Uso:
+	python dfa.py entrada.txt
+	python dfa.py entrada.json
+	python dfa.py entrada.txt salida.json
+
+La opcion 1 y 2 leen el automata de un archivo de texto
+y lo muestran en la terminal, la opcion 3  guardara la
+minimizacion en un archivo json (mayor legibilidad)
+
+Puede leer archivos en formato plano o en formato json,
+dentro del archivo de texto de ejemplo se muestra el formato
+adecuado para poder cargar un automata indicando:
+
+-estados
+-alfabeto
+-transiciones
+-estado inicial
+-estado final
+
+Los archivos de ejemplo contienen la informacion necesaria
+para poder correr otros ejemplos de automatas

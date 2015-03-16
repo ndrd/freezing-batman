@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
+# Jonathan de Jesus Andrade Lopez
+# 414006962
+# Marzo 15, 2015
+# minimizador de automatas finitos no deterministas
+# puede cargar un automata desde un archivo de texto
+# o desde formato json
 import json, copy, sys, os
 
-
+#Clase para minimizacion de automatas finitos deterministas
 class DFA (object):
-	# todo funciona con cadenas
 	def __init__(self):
 		self.estados = []
 		self.estados_finales = []
@@ -219,6 +224,7 @@ class DFA (object):
 		else:
 			return self.particiones_sucesivas(p1)
 		
+	#encuentra los elementos distinguibles dentro de una clase de equivalencia
 	def distingue(self, p0):
 		nueva_particion = []
 		particion = copy.deepcopy(p0)
@@ -256,9 +262,10 @@ class DFA (object):
 
 			else:
 				nueva_particion.append(clase_equivalencia)
+		
 		return nueva_particion
 
-
+	#muestra el automata minimizado
 	def to_json(self, i=3):
 		return json.dumps(self.__dict__, indent=i)
 
@@ -269,14 +276,10 @@ class DFA (object):
 		archivo.close()
 
 
-
 	def __repr__(self):
-		s  = "estados: " + str(self.estados)
-		s  = "estados finales: " + str(self.estados_finales)
-		s += "\nsigma : " + str(self.sigma) 
-		s += "\nestado inicial : " + self.estado_inicial 
-		return s
+		return self.to_json(3)
 
+	#devuelve el indice de un elemento
 	def indice(self, elemento, particion):
 		for i in range(len(particion)):
 			clase = particion[i]
