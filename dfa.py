@@ -153,14 +153,13 @@ class Dfa (object):
 		nuevos_estados = self.nuevos_estados(clases_distinguidas)
 		nuevos_finales = self.nuevos_estados_finales(clases_distinguidas)
 		nuevo_inicial = self.nuevo_estado_inicial(clases_distinguidas)
-		nueva_delta = self.nueva_delta(clases_distinguidas)
 
 		dfa_minimizado = Dfa()
 		dfa_minimizado.sigma = self.sigma
 		dfa_minimizado.estados = nuevos_estados
 		dfa_minimizado.estados_finales = nuevos_finales
 		dfa_minimizado.estado_inicial = nuevo_inicial
-		dfa_minimizado.delta = nueva_delta
+		self.nueva_delta(dfa_minimizado, clases_distinguidas)
 
 		return dfa_minimizado
 
@@ -169,7 +168,6 @@ class Dfa (object):
 		estados = {}
 		for i in range(len(clases_distinguidas)):
 			estados.update({i : clases_distinguidas[i]})
-		print estados
 		return estados
 
 	def nuevos_estados_finales(self, dic_distinguidas):
@@ -195,9 +193,16 @@ class Dfa (object):
 
 		return estados
 
-	def nueva_delta(self, dic_distinguidas):
-		estados = {}
+	def nueva_delta(self, min_dfa, dic_distinguidas):
 		
+		for estado in dic_distinguidas.keys():
+			viejo_estado = dic_distinguidas[estado][0]
+
+			for simbolo in self.sigma:
+				viejo_destino = self.aplicar_delta(viejo_estado, simbolo)
+				nuevo_destino = self.indice_nueva_clase(viejo_destino, dic_distinguidas)
+				min_dfa.agrega_transicion(estado, simbolo, nuevo_destino)
+
 
 	def indice_nueva_clase(self, simbolo, dic_distinguidas):
 		for k in dic_distinguidas.keys():
@@ -215,6 +220,7 @@ class Dfa (object):
 	def distingue(self, p0):
 		nueva_particion = []
 		particion = copy.deepcopy(p0)
+
 		for clase_equivalencia in particion:
 			if len(clase_equivalencia) > 1:
 
