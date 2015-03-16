@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
-import json, copy
+import json, copy, sys, os
 
-class Dfa (object):
+
+class DFA (object):
 	# todo funciona con cadenas
 	def __init__(self):
 		self.estados = []
@@ -57,7 +58,7 @@ class Dfa (object):
 				self.delta = datos['delta'] 
 				self.sigma = datos['sigma'] 
 				self.estado_inicial = datos['estado_inicial'] 
-				self.estados = datos['estados_finales'] 
+				self.estados_finales = datos['estados_finales'] 
 			except Exception, e:
 				print "Archivo mal formado"
 			
@@ -154,7 +155,7 @@ class Dfa (object):
 		nuevos_finales = self.nuevos_estados_finales(clases_distinguidas)
 		nuevo_inicial = self.nuevo_estado_inicial(clases_distinguidas)
 
-		dfa_minimizado = Dfa()
+		dfa_minimizado = DFA()
 		dfa_minimizado.sigma = self.sigma
 		dfa_minimizado.estados = nuevos_estados
 		dfa_minimizado.estados_finales = nuevos_finales
@@ -167,7 +168,8 @@ class Dfa (object):
 	def dic_distinguidas(self, clases_distinguidas):
 		estados = {}
 		for i in range(len(clases_distinguidas)):
-			estados.update({i : clases_distinguidas[i]})
+			clave = ''.join(clases_distinguidas[i])
+			estados.update({clave : clases_distinguidas[i]})
 		return estados
 
 	def nuevos_estados_finales(self, dic_distinguidas):
@@ -257,10 +259,17 @@ class Dfa (object):
 		return nueva_particion
 
 
-	def to_json(self):
-		return json.dumps(self.__dict__)
+	def to_json(self, i=3):
+		return json.dumps(self.__dict__, indent=i)
 
-	
+	def guardar_en_json(self, nombre_archivo):
+		archivo = open(nombre_archivo, 'wb')
+		cadena = self.to_json(4)
+		archivo.write(cadena)
+		archivo.close()
+
+
+
 	def __repr__(self):
 		s  = "estados: " + str(self.estados)
 		s  = "estados finales: " + str(self.estados_finales)
@@ -276,9 +285,49 @@ class Dfa (object):
 		return -1
 
 if __name__ == '__main__':
-	dfa =  Dfa()
-	dfa.cargar_desde_archivo_txt("example.txt")
-	print dfa.to_json()
+	if len(sys.argv) < 2:
+		print "Nota: para leer en formato json, el archivo debe tener extension .load_json"
+		sys.exit('Uso: %s archivo_entrada archivo_salida' % sys.argv[0])
+
+	if not os.path.exists(sys.argv[1]):
+	    sys.exit('ERROR: Archivo no encontrado! %s' % sys.argv[1])
+
+	load_json = False
+
+	if (sys.argv[1][-4:] == 'json'):
+		load_json = True
+
+	
+
+	mostrar_en_terminal = False
+	
+	if (len(sys.argv) == 2):
+		mostrar_en_terminal = True
+
+	save_json = False
+
+	if not mostrar_en_terminal:
+		if (sys.argv[2][-4:] == 'json'):
+			save_json = True
+
+	dfa =  DFA()
+	try:
+		if not load_json:
+			dfa.cargar_desde_archivo_txt(sys.argv[1])
+		else:
+			dfa.cargar_desde_json(sys.argv[1])
+
+	except Exception, e:
+		print "ERROR al cargar el archivo"
+
 	mini = dfa.minimizar()
-	print "\n\n\n"
-	print mini.to_json()
+
+	if mostrar_en_terminal:
+		print "Autámata original:"
+		print dfa.to_json(4)
+		print "\n\n Autámata minimizado:"
+		print mini.to_json(4)
+	else:
+		mini.guardar_en_json(sys.argv[2])
+
+
