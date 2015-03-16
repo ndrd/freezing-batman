@@ -15,22 +15,26 @@
 * #T : tabla de transiciones
 
 #T
-q0,a,q1
-q0,b,q0
-q1,a,q2
-q2,a,q3
-q3,a,q4
-q5,b,q5
+1,a,2
+1,b,3
+2,a,2
+2,b,3
+3,a,fi
+3,b,4
+4,a,2
+4,b,3
+fi,a,fi
+fi,b,fi
 
 #S
 a,b
 
 #Q 
-q0,q1,q2,q3,q4,q5
+1,2,3,4,5,fi
 
 #F
-q1,q2,q4
+1,2,4
 
 #I
-q0
+1
 
