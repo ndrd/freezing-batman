@@ -149,51 +149,61 @@ class Dfa (object):
 		p0 = [estados_finales, list(set(estados) - set(estados_finales))]
 			
 		clases_distinguidas = self.particiones_sucesivas(p0)
+		clases_distinguidas = self.dic_distinguidas(clases_distinguidas)
 		nuevos_estados = self.nuevos_estados(clases_distinguidas)
 		nuevos_finales = self.nuevos_estados_finales(clases_distinguidas)
 		nuevo_inicial = self.nuevo_estado_inicial(clases_distinguidas)
+		nueva_delta = self.nueva_delta(clases_distinguidas)
 
 		dfa_minimizado = Dfa()
 		dfa_minimizado.sigma = self.sigma
 		dfa_minimizado.estados = nuevos_estados
 		dfa_minimizado.estados_finales = nuevos_finales
 		dfa_minimizado.estado_inicial = nuevo_inicial
+		dfa_minimizado.delta = nueva_delta
 
 		return dfa_minimizado
 
 
-	def nuevos_estados_finales(self, clases_distinguidas):
-		finales = []
+	def dic_distinguidas(self, clases_distinguidas):
 		estados = {}
 		for i in range(len(clases_distinguidas)):
 			estados.update({i : clases_distinguidas[i]})
+		print estados
+		return estados
 
+	def nuevos_estados_finales(self, dic_distinguidas):
+		finales = []
+		
 		for estado in self.estados_finales:
-			for indice in estados.keys():
-				if estado in estados[indice] and indice not in finales:
-					finales.append(indice)
-					break
+			nuevo_final = self.indice_nueva_clase(estado, dic_distinguidas)
+			if nuevo_final != None and nuevo_final not in finales:
+				finales.append(nuevo_final)
 
 		return finales
 
-	def nuevo_estado_inicial(self, clases_distinguidas):
-		estados = {}
-		for i in range(len(clases_distinguidas)):
-			estados.update({i : clases_distinguidas[i]})
+	def nuevo_estado_inicial(self, dic_distinguidas):
+		return self.indice_nueva_clase(self.estado_inicial, dic_distinguidas)
+
+	def nuevos_estados(self, dic_distinguidas):
+		estados = []
 		
-		for i in estados.keys():
-			if self.estado_inicial in estados[i]:
-				return i
+		for estado in self.estados:
+			estado_nuevo = self.indice_nueva_clase(estado, dic_distinguidas)
+			if estado_nuevo != None and estado_nuevo not in estados:
+				estados.append(estado_nuevo)
 
-	def nuevos_estados(self, clases_distinguidas):
+		return estados
+
+	def nueva_delta(self, dic_distinguidas):
 		estados = {}
-		for i in range(len(clases_distinguidas)):
-			estados.update({i : clases_distinguidas[i]})
-		return estados.keys()
+		
 
-	def nueva_sigma(self, clases_distinguidas):
-		pass
-
+	def indice_nueva_clase(self, simbolo, dic_distinguidas):
+		for k in dic_distinguidas.keys():
+			if simbolo in dic_distinguidas[k]:
+				return k
+		return None
 
 	def particiones_sucesivas(self, p0):
 		p1 = self.distingue(p0)
