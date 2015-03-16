@@ -326,9 +326,9 @@ if __name__ == '__main__':
 	mini = dfa.minimizar()
 
 	if mostrar_en_terminal:
-		print "Autámata original:"
+		print "Autómata original:"
 		print dfa.to_json(4)
-		print "\n\n Autámata minimizado:"
+		print "\n\n Autómata minimizado:"
 		print mini.to_json(4)
 	else:
 		mini.guardar_en_json(sys.argv[2])
